@@ -3,7 +3,6 @@
 
 # User-specific files
 *.suo
-*.user
 *.userosscache
 *.sln.docstates
 
@@ -19,6 +18,8 @@ x64/
 x86/
 build/
 bld/
+GeneratedFiles/
+tmp/
 [Bb]in/
 [Oo]bj/
 

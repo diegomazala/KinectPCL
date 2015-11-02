@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{0DB824ED-51DB-448A-BC0A-BA80F905402D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{F87E6F7F-F06A-44E6-AC2E-AB5DAC113F07}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{947CB01C-95D6-4AB1-A286-AFA28BB6AE05}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KinectGrabber", "KinectGrabber.vcxproj", "{8D663998-23F1-4D80-82C9-0550C2580545}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KinectVoxelGridFilteringApp", "KinectVoxelGridFilteringApp.vcxproj", "{76D34C1B-2482-4BF2-B1DE-BDF9F075BFAF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KinectGrabberApp", "KinectGrabberApp.vcxproj", "{0E4FABA9-6D8B-4E32-B11B-A311C2847AD1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KinectICPApp", "KinectICPApp.vcxproj", "{07404DB0-81DB-4BAD-92CF-7A804379CDF0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D663998-23F1-4D80-82C9-0550C2580545}.Debug|x64.ActiveCfg = Debug|x64
+		{8D663998-23F1-4D80-82C9-0550C2580545}.Debug|x64.Build.0 = Debug|x64
+		{8D663998-23F1-4D80-82C9-0550C2580545}.Release|x64.ActiveCfg = Release|x64
+		{8D663998-23F1-4D80-82C9-0550C2580545}.Release|x64.Build.0 = Release|x64
+		{76D34C1B-2482-4BF2-B1DE-BDF9F075BFAF}.Debug|x64.ActiveCfg = Debug|x64
+		{76D34C1B-2482-4BF2-B1DE-BDF9F075BFAF}.Debug|x64.Build.0 = Debug|x64
+		{76D34C1B-2482-4BF2-B1DE-BDF9F075BFAF}.Release|x64.ActiveCfg = Release|x64
+		{76D34C1B-2482-4BF2-B1DE-BDF9F075BFAF}.Release|x64.Build.0 = Release|x64
+		{0E4FABA9-6D8B-4E32-B11B-A311C2847AD1}.Debug|x64.ActiveCfg = Debug|x64
+		{0E4FABA9-6D8B-4E32-B11B-A311C2847AD1}.Debug|x64.Build.0 = Debug|x64
+		{0E4FABA9-6D8B-4E32-B11B-A311C2847AD1}.Release|x64.ActiveCfg = Release|x64
+		{0E4FABA9-6D8B-4E32-B11B-A311C2847AD1}.Release|x64.Build.0 = Release|x64
+		{07404DB0-81DB-4BAD-92CF-7A804379CDF0}.Debug|x64.ActiveCfg = Debug|x64
+		{07404DB0-81DB-4BAD-92CF-7A804379CDF0}.Debug|x64.Build.0 = Debug|x64
+		{07404DB0-81DB-4BAD-92CF-7A804379CDF0}.Release|x64.ActiveCfg = Release|x64
+		{07404DB0-81DB-4BAD-92CF-7A804379CDF0}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8D663998-23F1-4D80-82C9-0550C2580545} = {947CB01C-95D6-4AB1-A286-AFA28BB6AE05}
+		{76D34C1B-2482-4BF2-B1DE-BDF9F075BFAF} = {F87E6F7F-F06A-44E6-AC2E-AB5DAC113F07}
+		{0E4FABA9-6D8B-4E32-B11B-A311C2847AD1} = {F87E6F7F-F06A-44E6-AC2E-AB5DAC113F07}
+		{07404DB0-81DB-4BAD-92CF-7A804379CDF0} = {F87E6F7F-F06A-44E6-AC2E-AB5DAC113F07}
+	EndGlobalSection
+EndGlobal
