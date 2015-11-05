@@ -256,8 +256,10 @@ namespace pcl
 		cloud->points.resize(cloud->height * cloud->width);
 
 		pcl::PointXYZRGB* pt = &cloud->points[0];
-		for (int y = 0; y < depthHeight; y++){
-			for (int x = 0; x < depthWidth; x++, pt++){
+		for (int y = 0; y < depthHeight; y++)
+		{
+			for (int x = 0; x < depthWidth; x++, pt++)
+			{
 				pcl::PointXYZRGB point;
 
 				DepthSpacePoint depthSpacePoint = { static_cast<float>(x), static_cast<float>(y) };
@@ -281,7 +283,7 @@ namespace pcl
 				if ((0 <= colorX) && (colorX < colorWidth) && (0 <= colorY) && (colorY < colorHeight)){
 					point.x = cameraSpacePoint.X;
 					point.y = cameraSpacePoint.Y;
-					point.z = cameraSpacePoint.Z;
+					point.z = -cameraSpacePoint.Z;
 				}
 
 				*pt = point;

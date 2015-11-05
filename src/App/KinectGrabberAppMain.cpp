@@ -34,7 +34,8 @@ int main(int argc, char* argv[])
 	// Start Retrieve Data
 	grabber->start();
 
-	while (!viewer.wasStopped()){
+	while (!viewer.wasStopped())
+	{
 		// Input Key ( Exit ESC key )
 		if (GetKeyState(VK_ESCAPE) < 0){
 			break;
