@@ -67,7 +67,6 @@ private:
 	void cloud_callback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& cloud);
 
 	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
-	pcl::PointCloud<pcl::PointXYZRGB>::Ptr mcloud;
 	pcl::Grabber* kinectGrabber;
 	boost::mutex mutex;
 	pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr buffer;

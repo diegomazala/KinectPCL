@@ -9,13 +9,7 @@
 #include <QTimer>
 
 
-void MainWindow::cloud_callback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& cloud)
-{
-	boost::mutex::scoped_lock lock(mutex);
-	buffer = cloud;
-	
-	Q_EMIT cloudUpdate();
-}
+
 
 
 MainWindow::MainWindow(QWidget *parent) : 
@@ -25,28 +19,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	
 	kinectGrabber = new pcl::KinectGrabber();				// Initialize kinect grabber
 	kinectGrabber->start();									// Start Retrieve Data
 
 	boost::function<void(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr&) > callback = boost::bind(&MainWindow::cloud_callback, this, _1);
 	boost::signals2::connection connection = kinectGrabber->registerCallback(callback);
-
-
-	mcloud.reset(new pcl::PointCloud<pcl::PointXYZRGB>);	// Setup the cloud pointer
-	mcloud->points.resize(200);								// The number of points in the cloud
-
-		
-	for (size_t i = 0; i < mcloud->points.size(); ++i)		// Fill the cloud with some points
-	{
-		mcloud->points[i].x = 1024 * rand() / (RAND_MAX + 1.0f);
-		mcloud->points[i].y = 1024 * rand() / (RAND_MAX + 1.0f);
-		mcloud->points[i].z = 1024 * rand() / (RAND_MAX + 1.0f);
-
-		mcloud->points[i].r = 128;
-		mcloud->points[i].g = 128;
-		mcloud->points[i].b = 128;
-	}
 
 	// Set up the QVTK window
 	viewer.reset(new pcl::visualization::PCLVisualizer("viewer", false));
@@ -54,15 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	viewer->setupInteractor(ui->qvtkWidget->GetInteractor(), ui->qvtkWidget->GetRenderWindow());
 	ui->qvtkWidget->update();
 
-	//viewer->addPointCloud(mcloud, "cloud");
-	//viewer->resetCamera();
-	//ui->qvtkWidget->update();
-	
 	connect(this, SIGNAL(cloudUpdate()), this, SLOT(update()));
-
-//	QTimer* updateTimer = new QTimer(this);
-//	connect(updateTimer, SIGNAL(timeout()), this, SLOT(ui->qvtkWidget->update()));
-//	updateTimer->start(33);
 }
 
 
@@ -72,6 +41,14 @@ MainWindow::~MainWindow()
 	kinectGrabber->stop();			// Stop Retrieve Data
 
 	delete ui;
+}
+
+void MainWindow::cloud_callback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& cloud)
+{
+	boost::mutex::scoped_lock lock(mutex);
+	buffer = cloud;
+
+	Q_EMIT cloudUpdate();
 }
 
 void MainWindow::update()
