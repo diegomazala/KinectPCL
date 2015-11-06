@@ -12,22 +12,65 @@
 #include <pcl/io/pcd_io.h>
 
 
+
+template<typename T>
+static void vector_write(std::ostream& out_file, const std::vector<T>& data)
+{
+	const std::size_t count = data.size();
+	out_file.write(reinterpret_cast<const char*>(&count), sizeof(std::size_t));
+	out_file.write(reinterpret_cast<const char*>(&data[0]), count * sizeof(T));
+}
+
+template<typename T>
+static void vector_read(std::istream& in_file, std::vector<T>& data)
+{
+	std::size_t count;
+	in_file.read(reinterpret_cast<char*>(&count), sizeof(std::size_t));
+	data.resize(count);
+	in_file.read(reinterpret_cast<char*>(&data[0]), count * sizeof(T));
+}
+
+
 std::string folder_output;
 uint32_t number_to_grab = 1, count = 0;
 bool binary_format = true;
+
 
 void savecloud(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& cloud)
 {
 	if (count < number_to_grab)
 	{
 		std::stringstream filename;
-		filename << folder_output << '/' << count << ".pcd";
-		std::cout << "Saving to " << filename.str() << std::endl;
-		pcl::io::savePCDFile(filename.str(), *cloud, binary_format);
+		filename << folder_output << '/' << boost::posix_time::to_iso_string(boost::posix_time::microsec_clock::local_time()) << ".pcd";
+		std::cout << count << " - " << filename.str() << std::endl;
+		pcl::PCDWriter w;
+		w.writeBinaryCompressed(filename.str(), *cloud);
+		++count;
+	}
+}
+
+
+
+
+void save_kinect_frame_buffer(const boost::shared_ptr<const pcl::KinectFrameBuffer>& frame_buffer)
+{
+	if (count < number_to_grab)
+	{
+		std::stringstream filename;
+		filename << folder_output << '/' << count << ".knt";
+		std::cout << count << " - " << filename.str() << std::endl;
+		
+		std::ofstream out;
+		out.open(filename.str(), std::ofstream::out | std::ofstream::binary);
+		{
+			vector_write(out, frame_buffer->info);
+			vector_write(out, frame_buffer->color);
+			vector_write(out, frame_buffer->depth);
+		}
+		out.close();
 		++count;
 	}
 
-	std::cout << "[" << count << "] frames saved" << std::endl;
 }
 
 
@@ -35,17 +78,17 @@ void savecloud(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& cloud)
 
 int main(int argc, char* argv[])
 {
-	boost::program_options::options_description desc("./spectroscan3d_grabpcd root_output_name");
+	boost::program_options::options_description desc("./KinectGrabberSave folder_output");
 
 	desc.add_options()
 		("help", "produce help message")
-		("folder_output,o", boost::program_options::value<std::string>(&folder_output)->required(), "output pcd ")
+		("folder_output,o", boost::program_options::value<std::string>(&folder_output)->required(), "output pcd folder")
 		("number,n", boost::program_options::value<uint32_t>(&number_to_grab)->default_value(1), "number of pcd to grab")
 		("binary_format,b", boost::program_options::value<bool>(&binary_format)->default_value(true), "binary format")
 		;
 
 	boost::program_options::positional_options_description p;
-	p.add("output", 1);
+	p.add("folder_output", 1);
 
 	boost::program_options::variables_map vm;
 	try
@@ -76,6 +119,9 @@ int main(int argc, char* argv[])
 		}
 	}
 
+	// Create KinectGrabber
+	pcl::Grabber* grabber = new pcl::KinectGrabber();
+
 
 	// Create Cloud Viewer
 	pcl::visualization::CloudViewer viewer("Point Cloud Viewer");
@@ -88,21 +134,28 @@ int main(int argc, char* argv[])
 			viewer.showCloud(cloud);
 		}
 	};
+	grabber->registerCallback(show_cb);
 
+#if 1 // .pcd
 	// Callback Function to be called when Updating Data
 	boost::function<void(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr&)> save_cloud_cb =
 		[&viewer](const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr &cloud)
 	{
 		savecloud(cloud);
 	};
-
-
-	// Create KinectGrabber
-	pcl::Grabber* grabber = new pcl::KinectGrabber();
-
-	// Regist Callback Function
-	grabber->registerCallback(show_cb);
 	grabber->registerCallback(save_cloud_cb);
+	
+#else	// .knt
+
+	// Callback Function to be called when Updating Data
+	boost::function<void(const boost::shared_ptr<const pcl::KinectFrameBuffer>&)> save_kinect_frame_buffer_cb =
+		[&viewer](const boost::shared_ptr<const pcl::KinectFrameBuffer> frame_buffer)
+	{
+		save_kinect_frame_buffer(frame_buffer);
+	};
+	grabber->registerCallback(save_kinect_frame_buffer_cb);
+#endif
+	
 
 	// Start Retrieve Data
 	grabber->start();

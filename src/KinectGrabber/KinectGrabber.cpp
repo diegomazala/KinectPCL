@@ -26,6 +26,7 @@ namespace pcl
 		, quit(false)
 		, signal_PointXYZ(nullptr)
 		, signal_PointXYZRGB(nullptr)
+		, signal_FrameBuffer(nullptr)
 	{
 		// Create Sensor Instance
 		result = GetDefaultKinectSensor(&sensor);
@@ -95,7 +96,7 @@ namespace pcl
 		if (FAILED(result)){
 			throw std::exception("Exception : IFrameDescription::get_Height()");
 		}
-
+		
 		SafeRelease(depthDescription);
 
 		// To Reserve Depth Frame Buffer
@@ -103,6 +104,7 @@ namespace pcl
 
 		signal_PointXYZ = createSignal<signal_Kinect2_PointXYZ>();
 		signal_PointXYZRGB = createSignal<signal_Kinect2_PointXYZRGB>();
+		signal_FrameBuffer = createSignal<signal_Kinect2_FrameBuffer>();
 	}
 
 	pcl::KinectGrabber::~KinectGrabber() throw()
@@ -111,6 +113,7 @@ namespace pcl
 
 		disconnect_all_slots<signal_Kinect2_PointXYZ>();
 		disconnect_all_slots<signal_Kinect2_PointXYZRGB>();
+		disconnect_all_slots<signal_Kinect2_FrameBuffer>();
 
 		// End Processing
 		if (sensor){
@@ -174,7 +177,8 @@ namespace pcl
 
 	void pcl::KinectGrabber::threadFunction()
 	{
-		while (!quit){
+		while (!quit)
+		{
 			boost::unique_lock<boost::mutex> lock(mutex);
 
 			// Acquire Latest Color Frame
@@ -192,7 +196,18 @@ namespace pcl
 			// Acquire Latest Depth Frame
 			IDepthFrame* depthFrame = nullptr;
 			result = depthReader->AcquireLatestFrame(&depthFrame);
-			if (SUCCEEDED(result)){
+			if (SUCCEEDED(result))
+			{
+				result = depthFrame->get_DepthMinReliableDistance(&depthMinDistance);
+				if (FAILED(result)){
+					throw std::exception("Exception : IFrameDescription::get_DepthMinReliableDistance()");
+				}
+
+				result = depthFrame->get_DepthMaxReliableDistance(&depthMaxDistance);
+				if (FAILED(result)){
+					throw std::exception("Exception : IFrameDescription::get_DepthMaxReliableDistance()");
+				}
+
 				// Retrieved Depth Data
 				result = depthFrame->CopyFrameDataToArray(depthBuffer.size(), &depthBuffer[0]);
 				if (FAILED(result)){
@@ -203,13 +218,14 @@ namespace pcl
 
 			lock.unlock();
 
-			if (signal_PointXYZ->num_slots() > 0) {
+			if (signal_PointXYZ->num_slots() > 0) 
 				signal_PointXYZ->operator()(convertDepthToPointXYZ(&depthBuffer[0]));
-			}
 
-			if (signal_PointXYZRGB->num_slots() > 0) {
+			if (signal_PointXYZRGB->num_slots() > 0) 
 				signal_PointXYZRGB->operator()(convertRGBDepthToPointXYZRGB(&colorBuffer[0], &depthBuffer[0]));
-			}
+
+			if (signal_FrameBuffer->num_slots() > 0)
+				signal_FrameBuffer->operator()(handleFrameBuffer(colorBuffer, depthBuffer));
 		}
 	}
 
@@ -291,5 +307,19 @@ namespace pcl
 		}
 
 		return cloud;
+	}
+
+
+	boost::shared_ptr<KinectFrameBuffer> pcl::KinectGrabber::handleFrameBuffer(const std::vector<RGBQUAD>& color_buffer, const std::vector<UINT16>& depth_buffer)
+	{
+		std::vector<uint16_t> info;
+		info.push_back(colorWidth);
+		info.push_back(colorHeight);
+		info.push_back(depthWidth);
+		info.push_back(depthHeight);
+		info.push_back(depthMinDistance);
+		info.push_back(depthMaxDistance);
+		boost::shared_ptr<KinectFrameBuffer> framebuffer(new KinectFrameBuffer(info, color_buffer, depth_buffer));
+		return framebuffer;
 	}
 }

@@ -12,9 +12,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\KinectGrabber\KinectGrabber.cpp" />
+    <ClCompile Include="..\src\KinectGrabber\PcdGrabberFromFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\KinectGrabber\KinectGrabber.h" />
+    <ClInclude Include="..\src\KinectGrabber\PcdGrabberFromFile.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8D663998-23F1-4D80-82C9-0550C2580545}</ProjectGuid>

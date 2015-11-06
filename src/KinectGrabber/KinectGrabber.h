@@ -32,6 +32,19 @@ namespace pcl
 		}
 	}
 
+	struct KinectFrameBuffer
+	{
+		KinectFrameBuffer(){}
+		KinectFrameBuffer(	const std::vector<uint16_t>& _info, 
+							const std::vector<RGBQUAD>& _color,
+							const std::vector<UINT16>& _depth) :
+							info(_info), color(_color), depth(_depth){}
+
+		std::vector<uint16_t> info;
+		std::vector<RGBQUAD> color;
+		std::vector<UINT16> depth;
+	};
+
 	class KinectGrabber : public pcl::Grabber
 	{
 		public:
@@ -46,12 +59,18 @@ namespace pcl
 			typedef void ( signal_Kinect2_PointXYZ )( const boost::shared_ptr<const pcl::PointCloud<pcl::PointXYZ>>& );
 			typedef void ( signal_Kinect2_PointXYZRGB )( const boost::shared_ptr<const pcl::PointCloud<pcl::PointXYZRGB>>& );
 
+			typedef void (signal_Kinect2_FrameBuffer)(const boost::shared_ptr<const KinectFrameBuffer>&);
+
 		protected:
 			boost::signals2::signal<signal_Kinect2_PointXYZ>* signal_PointXYZ;
 			boost::signals2::signal<signal_Kinect2_PointXYZRGB>* signal_PointXYZRGB;
 
+			boost::signals2::signal<signal_Kinect2_FrameBuffer>* signal_FrameBuffer;
+
 			pcl::PointCloud<pcl::PointXYZ>::Ptr convertDepthToPointXYZ( UINT16* depthBuffer );
 			pcl::PointCloud<pcl::PointXYZRGB>::Ptr convertRGBDepthToPointXYZRGB( RGBQUAD* colorBuffer, UINT16* depthBuffer );
+									
+			boost::shared_ptr<KinectFrameBuffer> handleFrameBuffer(const std::vector<RGBQUAD>& color_buffer, const std::vector<UINT16>& depth_buffer);
 
 			boost::thread thread;
 			mutable boost::mutex mutex;
@@ -75,6 +94,8 @@ namespace pcl
 
 			int depthWidth;
 			int depthHeight;
+			uint16_t depthMinDistance;
+			uint16_t depthMaxDistance;
 			std::vector<UINT16> depthBuffer;
 	};
 

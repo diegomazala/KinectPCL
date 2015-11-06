@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\App\KinectGrabberSave.cpp">
+    <ClCompile Include="..\src\App\KinectGrabberLoad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

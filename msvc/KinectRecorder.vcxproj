@@ -16,13 +16,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\App\KinectGrabberLoad.cpp" />
+    <ClCompile Include="..\src\App\KinectRecorder.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{0E0E5B0D-6221-4EE1-8CC8-2E955C707554}</ProjectGuid>
+    <ProjectGuid>{3451432C-E505-4C8E-BB8C-DD3303A7F8FE}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>KinectGrabberApp</RootNamespace>
-    <ProjectName>KinectGrabberLoad</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
