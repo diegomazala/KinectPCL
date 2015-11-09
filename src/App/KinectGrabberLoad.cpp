@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 
 	desc.add_options()
 		("help", "produce help message")
-		("folder_with_files,o", boost::program_options::value<std::string>(&folder_input)->required(), "folder with input pcd files")
+		("folder_with_files,i", boost::program_options::value<std::string>(&folder_input)->required(), "folder with input pcd files")
 		;
 
 	boost::program_options::positional_options_description p;
@@ -81,3 +81,6 @@ int main(int argc, char* argv[])
 
 	return EXIT_SUCCESS;
 }
+
+
+
