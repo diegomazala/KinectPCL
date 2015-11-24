@@ -233,7 +233,7 @@ private:
 	{
 		if (event.getKeyCode() && event.keyDown())
 		{
-			//std::cout << "Key : " << event.getKeyCode() << ", " << (int)(event.getKeyCode()) << std::endl;
+			std::cout << "Key : " << event.getKeyCode() << ", " << (int)(event.getKeyCode()) << std::endl;
 
 			if (event.getKeyCode() == 'a')
 			{
@@ -258,6 +258,12 @@ private:
 					PCL_ERROR("Error loading cloud %s.\n", file_names[current_index].c_str());
 				else
 					cloud_callback(cloud_src);
+			}
+			else if (event.getKeyCode() == 's')
+			{
+				std::cout << "saving output_point_cloud.pcd" << std::endl;
+				pcl::PCDWriter w;
+				w.writeBinaryCompressed("output_point_cloud.pcd", *cloud_result);
 			}
 
 		}
