@@ -78,7 +78,7 @@ namespace pcl
 		SafeRelease(colorDescription);
 
 		// To Reserve Color Frame Buffer
-		colorBuffer.resize(colorWidth * colorHeight);
+		colorBuffer.resize(colorWidth * colorHeight * 4);
 
 		// Retrieved Depth Frame Size
 		IFrameDescription* depthDescription;
@@ -186,7 +186,7 @@ namespace pcl
 			result = colorReader->AcquireLatestFrame(&colorFrame);
 			if (SUCCEEDED(result)){
 				// Retrieved Color Data
-				result = colorFrame->CopyConvertedFrameDataToArray(colorBuffer.size() * sizeof(RGBQUAD), reinterpret_cast<BYTE*>(&colorBuffer[0]), ColorImageFormat::ColorImageFormat_Bgra);
+				result = colorFrame->CopyConvertedFrameDataToArray(colorBuffer.size(), reinterpret_cast<BYTE*>(colorBuffer.data()), ColorImageFormat::ColorImageFormat_Bgra);
 				if (FAILED(result)){
 					throw std::exception("Exception : IColorFrame::CopyConvertedFrameDataToArray()");
 				}
@@ -222,7 +222,7 @@ namespace pcl
 				signal_PointXYZ->operator()(convertDepthToPointXYZ(&depthBuffer[0]));
 
 			if (signal_PointXYZRGB->num_slots() > 0) 
-				signal_PointXYZRGB->operator()(convertRGBDepthToPointXYZRGB(&colorBuffer[0], &depthBuffer[0]));
+				signal_PointXYZRGB->operator()(convertRGBDepthToPointXYZRGB((RGBQUAD*)&colorBuffer[0], &depthBuffer[0]));
 
 			if (signal_FrameBuffer->num_slots() > 0)
 				signal_FrameBuffer->operator()(handleFrameBuffer(colorBuffer, depthBuffer));
@@ -310,7 +310,7 @@ namespace pcl
 	}
 
 
-	boost::shared_ptr<KinectFrameBuffer> pcl::KinectGrabber::handleFrameBuffer(const std::vector<RGBQUAD>& color_buffer, const std::vector<UINT16>& depth_buffer)
+	boost::shared_ptr<KinectFrameBuffer> pcl::KinectGrabber::handleFrameBuffer(const std::vector<unsigned char>& color_buffer, const std::vector<UINT16>& depth_buffer)
 	{
 		std::vector<uint16_t> info;
 		info.push_back(colorWidth);
