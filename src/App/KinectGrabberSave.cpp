@@ -32,6 +32,7 @@ static void vector_read(std::istream& in_file, std::vector<T>& data)
 
 
 std::string folder_output;
+std::string file_format = "pcd";
 uint32_t number_to_grab = 1, count = 0;
 bool binary_format = true;
 
@@ -83,6 +84,7 @@ int main(int argc, char* argv[])
 	desc.add_options()
 		("help", "produce help message")
 		("folder_output,o", boost::program_options::value<std::string>(&folder_output)->required(), "output pcd folder")
+		("file_format,f", boost::program_options::value<std::string>(&file_format), "file format (pcd or knt)")
 		("number,n", boost::program_options::value<uint32_t>(&number_to_grab)->default_value(1), "number of pcd to grab")
 		("binary_format,b", boost::program_options::value<bool>(&binary_format)->default_value(true), "binary format")
 		;
@@ -136,26 +138,28 @@ int main(int argc, char* argv[])
 	};
 	grabber->registerCallback(show_cb);
 
-#if 1 // .pcd
-	// Callback Function to be called when Updating Data
-	boost::function<void(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr&)> save_cloud_cb =
-		[&viewer](const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr &cloud)
-	{
-		savecloud(cloud);
-	};
-	grabber->registerCallback(save_cloud_cb);
-	
-#else	// .knt
 
-	// Callback Function to be called when Updating Data
-	boost::function<void(const boost::shared_ptr<const pcl::KinectFrameBuffer>&)> save_kinect_frame_buffer_cb =
-		[&viewer](const boost::shared_ptr<const pcl::KinectFrameBuffer> frame_buffer)
+	if (file_format.find("knt") != std::string::npos)		// knt format
 	{
-		save_kinect_frame_buffer(frame_buffer);
-	};
-	grabber->registerCallback(save_kinect_frame_buffer_cb);
-#endif
-	
+		// Callback Function to be called when Updating Data
+		boost::function<void(const boost::shared_ptr<const pcl::KinectFrameBuffer>&)> save_kinect_frame_buffer_cb =
+			[&viewer](const boost::shared_ptr<const pcl::KinectFrameBuffer> frame_buffer)
+		{
+			save_kinect_frame_buffer(frame_buffer);
+		};
+		grabber->registerCallback(save_kinect_frame_buffer_cb);
+	}
+	else								// pcd format
+	{
+		// Callback Function to be called when Updating Data
+		boost::function<void(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr&)> save_cloud_cb =
+			[&viewer](const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr &cloud)
+		{
+			savecloud(cloud);
+		};
+		grabber->registerCallback(save_cloud_cb);
+	}
+
 
 	// Start Retrieve Data
 	grabber->start();

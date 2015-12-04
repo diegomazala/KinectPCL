@@ -302,10 +302,14 @@ namespace pcl
 					point.z = -cameraSpacePoint.Z;
 				}
 
+				//std::cout << std::fixed 
+				//	<< "v " << x << ' ' << y << ' ' << depth << std::endl 
+				//	<< cameraSpacePoint.X << ' ' << cameraSpacePoint.Y << ' ' << cameraSpacePoint.Z << std::endl;
+
 				*pt = point;
 			}
 		}
-
+		//std::cout << "------ " << std::endl << std::endl;
 		return cloud;
 	}
 
@@ -315,6 +319,7 @@ namespace pcl
 		std::vector<uint16_t> info;
 		info.push_back(colorWidth);
 		info.push_back(colorHeight);
+		info.push_back(4);			// channels
 		info.push_back(depthWidth);
 		info.push_back(depthHeight);
 		info.push_back(depthMinDistance);

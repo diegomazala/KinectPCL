@@ -16,11 +16,13 @@
 int main(int argc, char* argv[])
 {
 	std::string folder_input;
+	std::string file_format = "pcd";
 	boost::program_options::options_description desc("./KinectGrabberLoad input_files_folder");
 
 	desc.add_options()
 		("help", "produce help message")
 		("folder_with_files,i", boost::program_options::value<std::string>(&folder_input)->required(), "folder with input pcd files")
+		("file_format,f", boost::program_options::value<std::string>(&file_format), "file format (pcd or knt)")
 		;
 
 	boost::program_options::positional_options_description p;
@@ -46,8 +48,19 @@ int main(int argc, char* argv[])
 
 
 	// Create KinectGrabber
-	pcl::Grabber* grabber = new pcl::PcdGrabberFromFile();
-	((pcl::PcdGrabberFromFile*)grabber)->setFolder(folder_input);
+	pcl::Grabber* grabber = nullptr;
+
+	//if (file_format.find("knt"))		// knt format
+	//{
+	//	grabber = new pcl::KinectGrabberFromFile();
+	//	((pcl::KinectGrabberFromFile*)grabber)->setFolder(folder_input);
+	//}
+	//else								// pcd format
+	{
+		grabber = new pcl::PcdGrabberFromFile();
+		((pcl::PcdGrabberFromFile*)grabber)->setFolder(folder_input);
+	}
+
 
 
 	// Create Cloud Viewer

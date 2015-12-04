@@ -49,7 +49,8 @@ namespace pcl
 			DepthWidth,
 			DepthHeight,
 			DepthMinDistance,
-			DepthMaxDistance
+			DepthMaxDistance,
+			eTotal
 		};
 
 		KinectFrameBuffer()
@@ -71,7 +72,7 @@ namespace pcl
 
 		void reset()
 		{
-			info.resize(7, 0);
+			info.resize(eTotal, 0);
 			color.resize(1920 * 1080 * 4, 0);
 			depth.resize(512 * 424, 0);
 		}
