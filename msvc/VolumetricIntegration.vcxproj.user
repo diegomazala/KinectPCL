@@ -3,11 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>../../data/thai_lion/thai_lion_90_proj.xyzd.obj 3 1</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>../../data/monkey/monkey.obj 128 16</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>../../data/thai_lion/thai_lion_90_proj.xyzd.obj 3 1</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>../../data/monkey/monkey.obj 128 16</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>
